@@ -1,0 +1,44 @@
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background-color: #4f46e5;
+  padding: 0.75rem 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.link {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white; /* default text color */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end; /* ensures text stays at bottom */
+  gap: 4px; /* spacing between icon and text */
+  transition: color 0.2s ease;
+}
+
+.link svg {
+  font-size: 1.5rem;
+  color: white;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.link svg:hover {
+  color: #d1d5db; /* icon hover color */
+  transform: translateY(-2px); /* subtle lift effect */
+}
+
+.active {
+  color: #ffdd57; /* text color changes to yellow on active */
+}
+
+.active svg {
+  color: #ffdd57; /* icon color matches text when active */
+}

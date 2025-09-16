@@ -1,0 +1,53 @@
+/* PageContainer.module.css */
+.container {
+  max-width: 700px;
+  margin: 2rem auto 6rem; /* bottom space for nav bar */
+  padding: 2rem;
+  background-color: #fefefe;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.button {
+  padding: 0.5rem 1.25rem;
+  border-radius: 12px;
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.button:hover {
+  background-color: #3730a3;
+  transform: translateY(-1px);
+}
+
+.input {
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #4f46e5;
+  box-shadow: 0 0 8px rgba(79, 70, 229, 0.2);
+}
