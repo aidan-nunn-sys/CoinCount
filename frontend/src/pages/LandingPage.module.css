@@ -1,0 +1,121 @@
+.landingContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1f2c 0%, #2c3345 100%);
+  color: white;
+}
+
+.heroSection {
+  padding: 120px 20px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heroSection h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(45deg, #00b4db, #0083b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSection p {
+  font-size: 1.25rem;
+  color: #a0aec0;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.primaryButton, .secondaryButton {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(45deg, #00b4db, #0083b0);
+  border: none;
+  color: white;
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 180, 219, 0.4);
+}
+
+.secondaryButton {
+  background: transparent;
+  border: 2px solid #00b4db;
+  color: #00b4db;
+}
+
+.secondaryButton:hover {
+  background: rgba(0, 180, 219, 0.1);
+  transform: translateY(-2px);
+}
+
+.featuresSection {
+  padding: 80px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: transform 0.2s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature i {
+  font-size: 2.5rem;
+  color: #00b4db;
+  margin-bottom: 1rem;
+}
+
+.feature h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.feature p {
+  color: #a0aec0;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .heroSection h1 {
+    font-size: 2.5rem;
+  }
+
+  .heroSection p {
+    font-size: 1.1rem;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+  }
+
+  .featuresSection {
+    grid-template-columns: 1fr;
+    padding: 40px 20px;
+  }
+}

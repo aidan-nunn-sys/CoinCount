@@ -1,0 +1,25 @@
+.dashboardContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1f2c 0%, #2c3345 100%);
+  padding: 80px 20px 20px 20px;
+}
+
+.mainContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 70px 10px 10px 10px;
+  }
+
+  .mainContent {
+    padding: 1rem;
+  }
+}
