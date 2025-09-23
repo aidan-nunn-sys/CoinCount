@@ -1,1 +1,3 @@
+Simple networth tracker created with React and JavaScript
+
 In progess...
