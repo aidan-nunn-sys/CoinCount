@@ -57,6 +57,13 @@ function Navbar() {
         </button>
         <button 
           className={styles.navButton} 
+          onClick={() => navigate('/games')}
+        >
+          <i className="fas fa-gamepad"></i>
+          Games
+        </button>
+        <button 
+          className={styles.navButton} 
           onClick={() => navigate('/profile')}
         >
           <i className="fas fa-user"></i>

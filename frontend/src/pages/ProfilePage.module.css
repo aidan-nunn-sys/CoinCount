@@ -1,0 +1,195 @@
+.container {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.pageHeader h1 {
+  color: white;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-bottom: 0.35rem;
+  background: linear-gradient(45deg, #00b4db, #0083b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pageHeader p {
+  color: #a0aec0;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.card,
+.section,
+.feedbackCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: clamp(1.5rem, 3vw, 2rem);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+  color: white;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+}
+
+.subtleText {
+  color: #a0aec0;
+  font-size: 0.95rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: white;
+  gap: 1rem;
+}
+
+.infoRow:last-of-type {
+  border-bottom: none;
+}
+
+.muted {
+  color: #a0aec0;
+  font-size: 0.95rem;
+}
+
+.logoutButton {
+  margin-top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.logoutButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 65, 108, 0.35);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.statBlock {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: white;
+}
+
+.statLabel {
+  color: #a0aec0;
+  font-size: 0.9rem;
+}
+
+.statValue {
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  font-weight: 600;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.emptyState {
+  color: #a0aec0;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.feedbackCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.feedbackCard h2 {
+  color: white;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.feedbackCard p,
+.feedbackText {
+  color: #a0aec0;
+}
+
+.feedbackActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 0.7rem 1.3rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(45deg, #00b4db, #0083b0);
+  color: white;
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.25rem;
+  }
+
+  .logoutButton,
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

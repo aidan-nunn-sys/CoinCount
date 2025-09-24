@@ -1,242 +1,205 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import containerStyles from "../styles/PageContainer.module.css";
-import cardStyles from "../styles/Card.module.css";
-import buttonStyles from "../styles/Buttons.module.css";
+import React, { useState, useMemo } from "react";
+import { Line } from 'react-chartjs-2';
+import { useQuery } from "@tanstack/react-query";
+import { useAccounts } from '../hooks/useAccounts';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+  Legend,
+  Filler,
+} from "chart.js";
+import { format, subMonths, subYears } from "date-fns";
+
+import DashboardLayout from "../components/DashboardLayout";
+import LoadingSpinner from "../components/LoadingSpinner";
+import styles from "./NetWorthPage.module.css";
+
+// Chart registration stays outside
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
+
+// Pre-defined chart options stay outside
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  animation: {
+    duration: 300 // Reduce animation duration
+  },
+  plugins: {
+    legend: {
+      position: "top",
+      labels: { color: "#a0aec0" },
+    },
+    tooltip: {
+      enabled: true,
+      mode: "index",
+      intersect: false,
+      backgroundColor: "rgba(26, 31, 44, 0.95)",
+      titleColor: "#fff",
+      bodyColor: "#a0aec0",
+      borderColor: "rgba(255, 255, 255, 0.1)",
+      borderWidth: 1,
+      padding: 12,
+      bodySpacing: 4,
+      titleSpacing: 4,
+      cornerRadius: 8,
+      usePointStyle: true,
+      callbacks: {
+        label: (context) => `$${context.raw.toLocaleString()}`,
+      },
+    },
+  },
+  scales: {
+    y: {
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+      ticks: {
+        color: "#a0aec0",
+        callback: (value) => `$${value.toLocaleString()}`,
+      },
+    },
+    x: {
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+      ticks: { color: "#a0aec0" },
+    },
+  },
+  interaction: {
+    mode: "nearest",
+    axis: "x",
+    intersect: false,
+  },
+};
+
+const timeframes = [
+  { label: "1M", value: "1month" },
+  { label: "3M", value: "3months" },
+  { label: "6M", value: "6months" },
+  { label: "1Y", value: "1year" },
+  { label: "ALL", value: "all" },
+];
 
 export default function NetWorthPage() {
-  const [history, setHistory] = useState(() => {
-    const saved = JSON.parse(localStorage.getItem("netWorthHistory")) || [];
-    // Ensure every snapshot has accounts array
-    return saved.map((h) => ({ ...h, accounts: h.accounts || [] }));
+  const [timeframe, setTimeframe] = useState("3months");
+  const { accounts: rawAccounts } = useAccounts(); // Call hook at component level
+
+  // Use React Query with the accounts data
+  const { data: accounts, isLoading } = useQuery({
+    queryKey: ['accounts'],
+    queryFn: () => rawAccounts,
+    staleTime: 30000,
+    cacheTime: 3600000,
+    enabled: !!rawAccounts // Only run query when rawAccounts is available
   });
 
-  const [editingIndex, setEditingIndex] = useState(null);
-
-  const saveHistory = (updated) => {
-    setHistory(updated);
-    localStorage.setItem("netWorthHistory", JSON.stringify(updated));
-  };
-
-  // ➕ Add snapshot for current month
-  const addSnapshot = () => {
-    const now = new Date();
-    const monthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}-01`;
-
-    let updated = [...history];
-    const existingIndex = updated.findIndex((s) => s.date === monthKey);
-
-    if (existingIndex !== -1) {
-      setEditingIndex(existingIndex); // open existing snapshot
-      return;
+  // Optimize data calculations
+  const { netWorthData, chartData, currentNetWorth } = useMemo(() => {
+    if (!accounts?.length) {
+      return { netWorthData: [], chartData: null, currentNetWorth: 0 };
     }
 
-    const lastSnapshot = updated[updated.length - 1];
-    const newAccounts = lastSnapshot ? lastSnapshot.accounts.map((a) => ({ ...a })) : [];
+    const now = new Date();
+    const dateRange = {
+      "1month": subMonths(now, 1),
+      "3months": subMonths(now, 3),
+      "6months": subMonths(now, 6),
+      "1year": subYears(now, 1),
+      "all": new Date(Math.min(...accounts.map(a => new Date(a.createdAt))))
+    };
 
-    updated.push({ date: monthKey, accounts: newAccounts });
-    updated.sort((a, b) => new Date(a.date) - new Date(b.date));
-    saveHistory(updated);
+    const startDate = dateRange[timeframe];
+    const filteredData = accounts
+      .filter(account => new Date(account.createdAt) >= startDate)
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
-    setEditingIndex(updated.findIndex((s) => s.date === monthKey));
-  };
+    const labels = filteredData.map(d => format(new Date(d.createdAt), "MMM d"));
+    const values = filteredData.map(d => d.balance);
+    
+    return {
+      netWorthData: filteredData,
+      chartData: {
+        labels,
+        datasets: [{
+          label: "Net Worth",
+          data: values,
+          borderColor: "#00b4db",
+          backgroundColor: "rgba(0, 180, 219, 0.1)",
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      currentNetWorth: accounts.reduce((sum, acc) => sum + Number(acc.balance), 0)
+    };
+  }, [accounts, timeframe]);
 
-  const updateAccountBalance = (snapshotIndex, accountIndex, newBalance) => {
-    const updated = [...history];
-    updated[snapshotIndex].accounts[accountIndex].balance = parseFloat(newBalance) || 0;
-    saveHistory(updated);
-  };
-
-  const addAccountToSnapshot = (snapshotIndex) => {
-    const name = prompt("Account name:");
-    if (!name) return;
-    const type = prompt("Account type (Banking, Investment, Other):", "Banking");
-    const balance = parseFloat(prompt("Starting balance:") || "0");
-
-    const updated = [...history];
-    updated[snapshotIndex].accounts.push({
-      id: `${Date.now()}`,
-      name,
-      type,
-      balance: isNaN(balance) ? 0 : balance,
-    });
-    saveHistory(updated);
-  };
-
-  const deleteSnapshot = (index) => {
-    const updated = history.filter((_, i) => i !== index);
-    saveHistory(updated);
-  };
-
-  // chart data with safeguards
-  const data = history.map((h) => ({
-    name: new Date(h.date).toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    }),
-    value: (h.accounts || []).reduce((sum, acc) => sum + acc.balance, 0),
-  }));
-
-  const latest = data.length ? data[data.length - 1].value : 0;
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className={styles.loadingContainer}>
+          <LoadingSpinner />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <motion.div
-      className={containerStyles.container}
-      initial={{ opacity: 0, x: 40 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -40 }}
-      transition={{ type: "spring", stiffness: 80, damping: 20 }}
-    >
-      <h1>Net Worth</h1>
+    <DashboardLayout>
+      <div className={styles.pageHeader}>
+        <h1>Net Worth Overview</h1>
+        <p>Track your wealth growth over time</p>
+      </div>
 
-      {/* Add Snapshot */}
-      <button className={buttonStyles.button} onClick={addSnapshot}>
-        Add Snapshot (This Month)
-      </button>
-
-      {/* Chart */}
-      <motion.div className={cardStyles.card} layout style={{ marginTop: "1rem" }}>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke="#4f46e5"
-              strokeWidth={3}
-              dot={{ r: 4 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </motion.div>
-
-      {/* Latest total */}
-      <motion.div
-        className={cardStyles.card}
-        style={{ marginTop: "1rem", textAlign: "center" }}
-      >
-        <h2>Total Net Worth</h2>
-        <p style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#4f46e5" }}>
-          ${latest.toFixed(2)}
-        </p>
-      </motion.div>
-
-      {/* History List */}
-      <motion.div className={cardStyles.card} style={{ marginTop: "1rem" }}>
-        <h2>History</h2>
-        {history.map((h, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "0.5rem",
-            }}
+      <div className={styles.timeframeButtons}>
+        {timeframes.map(({ label, value }) => (
+          <button
+            key={value}
+            className={`${styles.timeframeButton} ${
+              timeframe === value ? styles.active : ""
+            }`}
+            onClick={() => setTimeframe(value)}
           >
-            <span>
-              {new Date(h.date).toLocaleDateString("en-US", {
-                month: "short",
-                year: "numeric",
-              })}
-            </span>
-            <div>
-              <button
-                onClick={() => setEditingIndex(i)}
-                style={{ marginRight: "0.5rem" }}
-              >
-                Edit
-              </button>
-              <button onClick={() => deleteSnapshot(i)} style={{ color: "red" }}>
-                Delete
-              </button>
-            </div>
-          </div>
+            {label}
+          </button>
         ))}
-      </motion.div>
+      </div>
 
-      {/* Edit Modal */}
-      {editingIndex !== null && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.6)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 2000,
-          }}
-          onClick={() => setEditingIndex(null)}
-        >
-          <div
-            style={{
-              background: "white",
-              padding: "2rem",
-              borderRadius: "12px",
-              width: "400px",
-              maxHeight: "80vh",
-              overflowY: "auto",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2>
-              Edit{" "}
-              {new Date(history[editingIndex].date).toLocaleDateString("en-US", {
-                month: "long",
-                year: "numeric",
-              })}
-            </h2>
-            {(history[editingIndex].accounts || []).map((acc, j) => (
-              <div key={j} style={{ marginBottom: "0.5rem" }}>
-                <label>
-                  {acc.name} ({acc.type})
-                </label>
-                <input
-                  type="number"
-                  value={acc.balance}
-                  onChange={(e) =>
-                    updateAccountBalance(editingIndex, j, e.target.value)
-                  }
-                  style={{ width: "100%", marginTop: "0.25rem" }}
-                />
-              </div>
-            ))}
-            <button
-              className={buttonStyles.button}
-              style={{ marginTop: "1rem" }}
-              onClick={() => addAccountToSnapshot(editingIndex)}
-            >
-              Add Account
-            </button>
-            <button
-              className={buttonStyles.button}
-              style={{ marginTop: "1rem", marginLeft: "0.5rem" }}
-              onClick={() => setEditingIndex(null)}
-            >
-              Close
-            </button>
-          </div>
+      <div className={styles.statsContainer}>
+        <div className={styles.statCard}>
+          <h3>Current Net Worth</h3>
+          <p className={styles.statValue}>
+            ${currentNetWorth.toLocaleString()}
+          </p>
         </div>
-      )}
-    </motion.div>
+        <div className={styles.statCard}>
+          <h3>Period Change</h3>
+          <p className={styles.statValue}>
+            {calculatePeriodChange(netWorthData)}%
+          </p>
+        </div>
+      </div>
+
+      <div className={styles.chartContainer}>
+        {chartData && <Line data={chartData} options={chartOptions} />}
+      </div>
+    </DashboardLayout>
   );
+}
+
+function calculatePeriodChange(data) {
+  if (data.length < 2) return "0.00";
+  const oldValue = Number(data[0].balance);
+  const newValue = Number(data[data.length - 1].balance);
+  const change = ((newValue - oldValue) / oldValue) * 100;
+  return change.toFixed(2);
 }

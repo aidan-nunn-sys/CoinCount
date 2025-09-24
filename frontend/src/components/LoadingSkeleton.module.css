@@ -1,0 +1,43 @@
+.skeleton {
+  width: 100%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.headerSkeleton {
+  height: 80px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.buttonsSkeleton {
+  height: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.statsSkeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.statCardSkeleton {
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.chartSkeleton {
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.6; }
+}

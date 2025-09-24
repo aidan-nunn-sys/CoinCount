@@ -60,6 +60,10 @@ export default function Login() {
             </div>
           </div>
           
+          <div className={styles.forgotPassword}>
+            <Link to="/reset-password">Forgot Password?</Link>
+          </div>
+
           <button type="submit" className={styles.submitButton}>
             Sign In
           </button>

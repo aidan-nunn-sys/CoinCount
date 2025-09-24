@@ -116,6 +116,17 @@
   font-size: 0.9rem;
 }
 
+.successMessage {
+  background: rgba(72, 187, 120, 0.1);
+  border: 1px solid #48bb78;
+  color: #48bb78;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
 .authFooter {
   margin-top: 2rem;
   text-align: center;
@@ -131,6 +142,26 @@
 
 .authFooter a:hover {
   text-decoration: underline;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.forgotPassword a {
+  color: #00b4db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.forgotPassword a:hover {
+  color: #0083b0;
+  background: rgba(0, 180, 219, 0.1);
 }
 
 @media (max-width: 480px) {

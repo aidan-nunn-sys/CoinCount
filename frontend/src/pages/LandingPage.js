@@ -1,8 +1,17 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import styles from './LandingPage.module.css';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/dashboard');
+    }
+  }, [currentUser, navigate]);
 
   return (
     <div className={styles.landingContainer}>
