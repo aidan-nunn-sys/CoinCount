@@ -22,12 +22,6 @@ Currently still in production...
 - 📱 **Responsive UI**  
   Clean, modern design with smooth animations.
 
-- 🎨 **Modern Tech Stack**  
-  - **React + React Router** for page navigation  
-  - **Framer Motion** for animations  
-  - **Recharts** for data visualization  
-  - **React Icons** for UI polish  
-
 ---
 
 ## 🚀 Getting Started
