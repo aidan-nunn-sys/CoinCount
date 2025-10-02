@@ -3,6 +3,8 @@
 A modern, local-first **personal finance and net worth tracker** built with **React**.  
 Easily track accounts, monitor balances, and visualize your net worth over time — all stored securely in your browser’s `localStorage` (no external servers required).
 
+Currently still in production...
+
 ---
 
 ## ✨ Features
