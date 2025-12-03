@@ -34,7 +34,7 @@ Currently still in production...
 ```bash
 # Clone the repo
 git clone https://github.com/aidan-nunn-sys/coincount.git
-cd coincount
+cd CoinCount/Frontend
 
 # Install dependencies
 npm install
